@@ -25,3 +25,7 @@ From an other console:
 JWT=$(barong-jwt --uid IDBD12DEB15B)
 curl -H "Authorization: Bearer ${JWT}" localhost:3000/api/v2/resource/users/me
 ```
+
+## License
+Barong JWT is released under the terms of the [Apache License 2.0](LICENSE.md).
+It's used in openware [cryptocurrency exchange software](https://www.openware.com) stack, and more!
