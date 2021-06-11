@@ -9,31 +9,39 @@ import (
 	"github.com/openware/rango/pkg/auth"
 )
 
-var (
-	uid        = flag.String("uid", "U487205863", "UID")
-	email      = flag.String("email", "admin@barong.io", "Email")
-	role       = flag.String("role", "admin", "Role")
-	level      = flag.Int("level", 3, "Level")
-	configPath = "config"
+const (
+	defaultDir = "config"
 )
 
-func checkConfigDirectory() {
-	i, err := os.Stat(configPath)
+var (
+	uid   = flag.String("uid", "U487205863", "UID")
+	email = flag.String("email", "admin@barong.io", "Email")
+	role  = flag.String("role", "admin", "Role")
+	level = flag.Int("level", 3, "Level")
+)
+
+func checkDefaultDir() {
+	i, err := os.Stat(defaultDir)
 	if os.IsNotExist(err) {
-		os.Mkdir(configPath, 0750)
+		os.Mkdir(defaultDir, 0750)
 	} else if err != nil {
 		panic(err.Error())
 	}
 	if i != nil && !i.IsDir() {
-		panic(configPath + " exists and is not a directory!")
+		panic("JWT_PRIVATE_KEY_PATH unset, " + defaultDir + " exists and is not a directory!")
 	}
 }
 
 func main() {
 	flag.Parse()
-	checkConfigDirectory()
 
-	ks, err := auth.LoadOrGenerateKeys(configPath+"/rsa-key", configPath+"/rsa-key.pub")
+	keyPath := os.Getenv("JWT_PRIVATE_KEY_PATH")
+	if keyPath == "" {
+		checkDefaultDir()
+		keyPath = defaultDir + "/rsa-key"
+	}
+
+	ks, err := auth.LoadOrGenerateKeys(keyPath, keyPath+".pub")
 	if err != nil {
 		log.Printf("ERROR: %s\n", err.Error())
 	}

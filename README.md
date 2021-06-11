@@ -11,20 +11,22 @@ It is very useful in developement mode to develop and test a microservice withou
 | role  | admin           | Role        |
 | level | 3               | Level       |
 
+`JWT_PRIVATE_KEY_PATH` is used to specify JWT private key path, otherwise `config/rsa-key` would be created and used.
+
 ## Example of API call to barong
 
 ```bash
 # Create the secret key file if it doesn't exist
 barong-jwt
 
-# Configure baron to use this secret file
+# Configure barong to use a specific secret file
 export JWT_PRIVATE_KEY_PATH=config/rsa-key
 
 # Run barong server
 rails s
 ```
 
-From an other console:
+From another terminal tab:
 ```
 JWT=$(barong-jwt --uid IDBD12DEB15B)
 curl -H "Authorization: Bearer ${JWT}" localhost:3000/api/v2/resource/users/me
